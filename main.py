@@ -1,29 +1,35 @@
 import sys, pygame, random
 from colours import Colours
-from dot import Dot
+from particle import Particle
 pygame.init()
 
 # TODO:
 # -> Change snake_case to camelCase
 
-BOARD_WIDTH_PIXELS = 100
-BOARD_HEIGHT_PIXELS = 100
-DOT_DIAMETER = 10
-NUMBER_OF_ENTITIES = 5
-DOT_SPEED = DOT_DIAMETER // 2
+BOARD_WIDTH = 80
+BOARD_HEIGHT = 60
+PARTICLE_DIAMETER = 10
+NUMBER_OF_PARTICLES = 5
 
-def create_entities(number_of_entities, screen_width, screen_height):
+BOARD_WIDTH_PIXELS = BOARD_WIDTH * PARTICLE_DIAMETER
+BOARD_HEIGHT_PIXELS = BOARD_HEIGHT * PARTICLE_DIAMETER
+
+def findRandomPosition(width, height):
+    x = random.randint(0, width)
+    y = random.randint(0, height)
+    return (x, y)
+
+def createEntities(numberOfEntities, gridWidth, gridHeight):
     colours = Colours()
     entities = []
-    for i in range(number_of_entities):
+    for i in range(numberOfEntities):
+        randomPosition = findRandomPosition(gridWidth, gridHeight)
         entities.append(
-            Dot(
+            Particle(
                 id=str(i), 
-                x=random.randint(0, BOARD_WIDTH_PIXELS // DOT_DIAMETER) + DOT_DIAMETER // 2, 
-                y=random.randint(0, BOARD_HEIGHT_PIXELS // DOT_DIAMETER) + DOT_DIAMETER // 2,
-                radius=DOT_DIAMETER // 2,
-                speed=DOT_SPEED,
-                colour=colours.getRandomColor()
+                x=randomPosition[0], 
+                y=randomPosition[1],
+                colour=colours.getColour("BLUE")
             )
         )
     return entities
@@ -34,6 +40,11 @@ def setupScreen():
     clock = pygame.time.Clock()
     return screen, clock
 
+def gridLocationToPixelLocation(location):
+    pixelLocationX = (location[0] * PARTICLE_DIAMETER) + (PARTICLE_DIAMETER // 2) 
+    pixelLocationY = (location[1] * PARTICLE_DIAMETER) + (PARTICLE_DIAMETER // 2)
+    return (pixelLocationX, pixelLocationY)
+
 def gameLoop(screen, clock, entities):
 
     colours = Colours()
@@ -43,18 +54,18 @@ def gameLoop(screen, clock, entities):
         for event in pygame.event.get(): 
             if event.type == pygame.QUIT: running = False
         
-        screen.fill(colours.colour_list["BLACK"])
+        screen.fill(colours.getColour("BLACK"))
         
         for e in entities:
-            pygame.draw.circle(screen, e.getColour(), e.getLocation(), DOT_DIAMETER // 2)
-            e.moveRandom(BOARD_WIDTH_PIXELS, BOARD_HEIGHT_PIXELS)
+            pygame.draw.circle(screen, e.getColour(), gridLocationToPixelLocation(e.getLocation()), PARTICLE_DIAMETER // 2)
+            e.moveRandom(BOARD_WIDTH, BOARD_HEIGHT)
 
         pygame.display.update()
         clock.tick(15)
 
 def main():
     screen, clock = setupScreen()
-    entities = create_entities(NUMBER_OF_ENTITIES, BOARD_WIDTH_PIXELS, BOARD_HEIGHT_PIXELS)
+    entities = createEntities(NUMBER_OF_PARTICLES, BOARD_WIDTH, BOARD_HEIGHT)
 
     gameLoop(screen, clock, entities)
 
