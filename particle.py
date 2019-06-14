@@ -40,18 +40,18 @@ class Particle:
 
         if self.x > 0:
             possibleMoves.append(self.moveLeft)
-        if self.x < board_width - 1:
+        if self.x < boardWidth - 1:
             possibleMoves.append(self.moveRight)
         if self.y > 0:
             possibleMoves.append(self.moveUp)
-        if self.y < board_height - 1:
+        if self.y < boardHeight - 1:
             possibleMoves.append(self.moveDown)
 
         return possibleMoves
 
-    def moveRandom(self, board_width, board_height):
+    def moveRandom(self, boardWidth, boardHeight):
         # TODO: 
-        viableMoves = 
+        viableMoves = self.getViableMoves(boardWidth, boardHeight)
 
-        if len(possibleMoves) > 0:
-            random.choice(possibleMoves)()
+        if len(viableMoves) > 0:
+            random.choice(viableMoves)()
