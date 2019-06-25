@@ -1,4 +1,6 @@
 import random
+import util
+
 class Particle:
 
     def __init__(self, id, x, y, colour):
@@ -23,35 +25,34 @@ class Particle:
     def getColour(self):
         return self.colour
     
-    def moveRight(self):
-        self.x += 1
-    
-    def moveLeft(self):
-        self.x -= 1
-    
-    def moveUp(self):
-        self.y -= 1
-    
-    def moveDown(self):
-        self.y += 1
-    
-    def getViableMoves(self, boardWidth, boardHeight):
-        possibleMoves = []
+    def getViablePositionsToMove(self, boardWidth, boardHeight):
+        viablePositions = []
 
         if self.x > 0:
-            possibleMoves.append(self.moveLeft)
+            viablePositions.append((self.x - 1, self.y))
         if self.x < boardWidth - 1:
-            possibleMoves.append(self.moveRight)
+            viablePositions.append((self.x + 1, self.y))
         if self.y > 0:
-            possibleMoves.append(self.moveUp)
+            viablePositions.append((self.x, self.y - 1))
         if self.y < boardHeight - 1:
-            possibleMoves.append(self.moveDown)
+            viablePositions.append((self.x, self.y + 1))
 
-        return possibleMoves
+        return viablePositions
 
-    def moveRandom(self, boardWidth, boardHeight):
-        # TODO: 
-        viableMoves = self.getViableMoves(boardWidth, boardHeight)
+    def move(self, boardWidth, boardHeight, particles):
+        viablePositions = self.getViablePositionsToMove(boardWidth, boardHeight)
 
-        if len(viableMoves) > 0:
-            random.choice(viableMoves)()
+        if len(viablePositions) > 0:
+            selectedPosition = random.choice(viablePositions)
+            self.setLocation(selectedPosition)
+    
+    def filterSelfOutOfParticleList(self, particles):
+        return list(filter(lambda p: p.id != self.id, particles))
+
+    def findClosestParticle(self, particles):   # We dont need this function
+        otherParticles = self.filterSelfOutOfParticleList(particles)
+        particleCoords = [p.getLocation() for p in otherParticles]
+        closestCoords = util.findClosestCoordsToTargetCoord(self.getLocation(), particleCoords)
+
+        if len(closestCoords) > 0:
+            return random.choice(closestCoords)
