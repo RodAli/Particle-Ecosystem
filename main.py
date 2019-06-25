@@ -10,31 +10,41 @@ pygame.init()
 BOARD_WIDTH = 80
 BOARD_HEIGHT = 60
 PARTICLE_DIAMETER = 10
-NUMBER_OF_PARTICLES = 1
-NUMBER_OF_PREDATORS = 1
+NUMBER_OF_PARTICLES = 4
+NUMBER_OF_PREDATORS = 0
 
 BOARD_WIDTH_PIXELS = BOARD_WIDTH * PARTICLE_DIAMETER
 BOARD_HEIGHT_PIXELS = BOARD_HEIGHT * PARTICLE_DIAMETER
 
 colours = Colours()
+particleCounter = 0
 
 def findRandomPosition(width, height):
     x = random.randint(0, width)
     y = random.randint(0, height)
     return (x, y)
 
+def createParticle(particles, location):
+    global particleCounter
+    particleName = 'Particle-' + str(particleCounter)
+    particles.append(
+            Particle(
+                id=particleName, 
+                x=location[0], 
+                y=location[1],
+                colour=colours.getColour("GREEN")
+            )
+        )
+    particleCounter += 1
+    #print("{} Added at Position: ({})".format(particleName, location))
+    return particles
+
 def createParticles(numberOfParticles, gridWidth, gridHeight):
     particles = []
     for i in range(numberOfParticles):
         randomPosition = findRandomPosition(gridWidth, gridHeight)
-        particles.append(
-            Particle(
-                id='Particle-' + str(i), 
-                x=randomPosition[0], 
-                y=randomPosition[1],
-                colour=colours.getColour("GREEN")
-            )
-        )
+        particles = createParticle(particles, randomPosition)
+
     return particles
 
 def createPredators(numberOfPredators, gridWidth, gridHeight):
@@ -62,12 +72,21 @@ def gridLocationToPixelLocation(location):
     pixelLocationY = (location[1] * PARTICLE_DIAMETER) + (PARTICLE_DIAMETER // 2)
     return (pixelLocationX, pixelLocationY)
 
+def handleClick(clickPosition, particles):
+    
+    gridLocation = (clickPosition[0] // PARTICLE_DIAMETER, clickPosition[1] // PARTICLE_DIAMETER)
+    particles = createParticle(particles, gridLocation)
+    return particles
+
 def handleEvents(events, particles, predators, running):
     running = True
     for event in events:
         if event.type == pygame.QUIT: running = False
+        
+        if event.type == pygame.MOUSEBUTTONUP: 
+            particles = handleClick(pygame.mouse.get_pos(), particles)
 
-    return running
+    return running, particles
 
 def drawBoard(screen, particles, predators):
     screen.fill(colours.getColour("BLACK"))
@@ -81,7 +100,7 @@ def gameLoop(screen, clock, particles, predators):
     running = True
     while running:
         
-        running = handleEvents(pygame.event.get(), particles, predators, running) 
+        running, particles = handleEvents(pygame.event.get(), particles, predators, running) 
         
         drawBoard(screen, particles, predators)
         
