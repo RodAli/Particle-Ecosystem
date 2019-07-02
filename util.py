@@ -16,7 +16,3 @@ def findClosestCoordsToTargetCoord(targetCoord: tuple, coords: tuple):
         closestCoords.append(coords[idx])
     
     return closestCoords
-
-
-if __name__ == "__main__":
-    print(findClosestCoordsToTargetCoord((0,0), [(2,0), (1,1), (3,3)]))

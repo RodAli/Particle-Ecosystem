@@ -6,12 +6,13 @@ pygame.init()
 
 # TODO:
 # -> Change snake_case to camelCase
+# -> Particles cannot intersect with eachother or predators (they dont kill themselves)
 
-BOARD_WIDTH = 80
-BOARD_HEIGHT = 60
+BOARD_WIDTH = 150
+BOARD_HEIGHT = 80
 PARTICLE_DIAMETER = 10
-NUMBER_OF_PARTICLES = 4
-NUMBER_OF_PREDATORS = 0
+NUMBER_OF_PARTICLES = 100
+NUMBER_OF_PREDATORS = 1
 
 BOARD_WIDTH_PIXELS = BOARD_WIDTH * PARTICLE_DIAMETER
 BOARD_HEIGHT_PIXELS = BOARD_HEIGHT * PARTICLE_DIAMETER
@@ -36,7 +37,6 @@ def createParticle(particles, location):
             )
         )
     particleCounter += 1
-    #print("{} Added at Position: ({})".format(particleName, location))
     return particles
 
 def createParticles(numberOfParticles, gridWidth, gridHeight):
@@ -63,7 +63,7 @@ def createPredators(numberOfPredators, gridWidth, gridHeight):
 
 def setupScreen():
     screen = pygame.display.set_mode((BOARD_WIDTH_PIXELS, BOARD_HEIGHT_PIXELS))
-    pygame.display.set_caption("Pygame test")
+    pygame.display.set_caption("Particle Ecosystem")
     clock = pygame.time.Clock()
     return screen, clock
 
@@ -73,7 +73,6 @@ def gridLocationToPixelLocation(location):
     return (pixelLocationX, pixelLocationY)
 
 def handleClick(clickPosition, particles):
-    
     gridLocation = (clickPosition[0] // PARTICLE_DIAMETER, clickPosition[1] // PARTICLE_DIAMETER)
     particles = createParticle(particles, gridLocation)
     return particles
@@ -96,7 +95,6 @@ def drawBoard(screen, particles, predators):
         pygame.draw.circle(screen, p.getColour(), gridLocationToPixelLocation(p.getLocation()), PARTICLE_DIAMETER // 2)
 
 def gameLoop(screen, clock, particles, predators):
-
     running = True
     while running:
         
@@ -104,11 +102,14 @@ def gameLoop(screen, clock, particles, predators):
         
         drawBoard(screen, particles, predators)
         
+        for p in predators:
+            particles = p.eat(particles)
+            p.move(BOARD_WIDTH, BOARD_HEIGHT, particles)
+            particles = p.eat(particles)
         for p in particles:
             p.move(BOARD_WIDTH, BOARD_HEIGHT, particles)
-        for p in predators:
-            p.move(BOARD_WIDTH, BOARD_HEIGHT, particles)
-            
+        
+        print([p.particlesEaten for p in predators])
         pygame.display.update()
         clock.tick(15)
 
