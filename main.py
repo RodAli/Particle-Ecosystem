@@ -1,7 +1,8 @@
 import sys, pygame, random
-from colours import Colours
+from colours import getColour
 from particle import Particle
 from predator import Predator
+from worldState import WorldState
 pygame.init()
 
 # TODO:
@@ -11,55 +12,11 @@ pygame.init()
 BOARD_WIDTH = 150
 BOARD_HEIGHT = 80
 PARTICLE_DIAMETER = 10
-NUMBER_OF_PARTICLES = 100
-NUMBER_OF_PREDATORS = 1
+NUMBER_OF_PARTICLES = 10
+NUMBER_OF_PREDATORS = 3
 
 BOARD_WIDTH_PIXELS = BOARD_WIDTH * PARTICLE_DIAMETER
 BOARD_HEIGHT_PIXELS = BOARD_HEIGHT * PARTICLE_DIAMETER
-
-colours = Colours()
-particleCounter = 0
-
-def findRandomPosition(width, height):
-    x = random.randint(0, width)
-    y = random.randint(0, height)
-    return (x, y)
-
-def createParticle(particles, location):
-    global particleCounter
-    particleName = 'Particle-' + str(particleCounter)
-    particles.append(
-            Particle(
-                id=particleName, 
-                x=location[0], 
-                y=location[1],
-                colour=colours.getColour("GREEN")
-            )
-        )
-    particleCounter += 1
-    return particles
-
-def createParticles(numberOfParticles, gridWidth, gridHeight):
-    particles = []
-    for i in range(numberOfParticles):
-        randomPosition = findRandomPosition(gridWidth, gridHeight)
-        particles = createParticle(particles, randomPosition)
-
-    return particles
-
-def createPredators(numberOfPredators, gridWidth, gridHeight):
-    predators = []
-    for i in range(numberOfPredators):
-        randomPosition = findRandomPosition(gridWidth, gridHeight)
-        predators.append(
-            Predator(
-                id='Predator-' + str(i), 
-                x=randomPosition[0], 
-                y=randomPosition[1],
-                colour=colours.getColour("RED")
-            )
-        )
-    return predators
 
 def setupScreen():
     screen = pygame.display.set_mode((BOARD_WIDTH_PIXELS, BOARD_HEIGHT_PIXELS))
@@ -72,53 +29,50 @@ def gridLocationToPixelLocation(location):
     pixelLocationY = (location[1] * PARTICLE_DIAMETER) + (PARTICLE_DIAMETER // 2)
     return (pixelLocationX, pixelLocationY)
 
-def handleClick(clickPosition, particles):
+def handleClick(clickPosition, world):
     gridLocation = (clickPosition[0] // PARTICLE_DIAMETER, clickPosition[1] // PARTICLE_DIAMETER)
-    particles = createParticle(particles, gridLocation)
-    return particles
+    world.createParticle(gridLocation)
 
-def handleEvents(events, particles, predators, running):
-    running = True
+def handleEvents(events, world):
     for event in events:
-        if event.type == pygame.QUIT: running = False
+        if event.type == pygame.QUIT: world.isRunning = False
         
         if event.type == pygame.MOUSEBUTTONUP: 
-            particles = handleClick(pygame.mouse.get_pos(), particles)
+            handleClick(pygame.mouse.get_pos(), world)
 
-    return running, particles
-
-def drawBoard(screen, particles, predators):
-    screen.fill(colours.getColour("BLACK"))
-    for p in particles:
+def drawBoard(screen, world):
+    screen.fill(getColour("BLACK"))
+    for p in world.particles:
         pygame.draw.circle(screen, p.getColour(), gridLocationToPixelLocation(p.getLocation()), PARTICLE_DIAMETER // 2)    
-    for p in predators:
+    for p in world.predators:
         pygame.draw.circle(screen, p.getColour(), gridLocationToPixelLocation(p.getLocation()), PARTICLE_DIAMETER // 2)
 
-def gameLoop(screen, clock, particles, predators):
-    running = True
-    while running:
+def gameLoop(screen, clock, world):
+    
+    while world.isRunning:
         
-        running, particles = handleEvents(pygame.event.get(), particles, predators, running) 
+        handleEvents(pygame.event.get(), world) 
         
-        drawBoard(screen, particles, predators)
+        drawBoard(screen, world)
         
-        for p in predators:
-            particles = p.eat(particles)
-            p.move(BOARD_WIDTH, BOARD_HEIGHT, particles)
-            particles = p.eat(particles)
-        for p in particles:
-            p.move(BOARD_WIDTH, BOARD_HEIGHT, particles)
+        for p in world.predators:
+            p.eat(world)
+            p.move(world)
+            p.eat(world)
+        for p in world.particles:
+            p.move(world)
         
-        print([p.particlesEaten for p in predators])
         pygame.display.update()
         clock.tick(15)
 
 def main():
     screen, clock = setupScreen()
-    particles = createParticles(NUMBER_OF_PARTICLES, BOARD_WIDTH, BOARD_HEIGHT)
-    predators = createPredators(NUMBER_OF_PREDATORS, BOARD_WIDTH, BOARD_HEIGHT)
+    world = WorldState(BOARD_WIDTH, BOARD_HEIGHT)
+    # make thse function apart of the world class
+    world.createParticles(NUMBER_OF_PARTICLES)
+    world.createPredators(NUMBER_OF_PREDATORS)
 
-    gameLoop(screen, clock, particles, predators)
+    gameLoop(screen, clock, world)
 
 if __name__ == "__main__":
     main()

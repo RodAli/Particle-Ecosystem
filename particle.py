@@ -39,8 +39,8 @@ class Particle:
 
         return viablePositions
 
-    def move(self, boardWidth, boardHeight, particles):
-        viablePositions = self.getViablePositionsToMove(boardWidth, boardHeight)
+    def move(self, world):
+        viablePositions = self.getViablePositionsToMove(world.gridWidth, world.gridHeight)
 
         if len(viablePositions) > 0:
             selectedPosition = random.choice(viablePositions)

@@ -8,14 +8,14 @@ class Predator(Particle):
         Particle.__init__(self, id, x, y, colour)
         self.particlesEaten = 0
 
-    def move(self, boardWidth, boardHeight, particles):
+    def move(self, world):
 
         # If there are no particles, default to random movement
-        if len(particles) <= 0:
+        if len(world.particles) <= 0:
             Particle.move(self, boardWidth, boardHeight, particles)
             return
         
-        particleLocations = [p.getLocation() for p in particles]
+        particleLocations = [p.getLocation() for p in world.particles]
 
         preyLocations = util.findClosestCoordsToTargetCoord(self.getLocation(), particleLocations)
         
@@ -23,7 +23,7 @@ class Predator(Particle):
         
         targetPreyLocation = random.choice(preyLocations)
 
-        viableCoords = self.getViablePositionsToMove(boardWidth, boardHeight)
+        viableCoords = self.getViablePositionsToMove(world.gridWidth, world.gridHeight)
         
         bestCoords = util.findClosestCoordsToTargetCoord(targetPreyLocation, viableCoords)
         
@@ -32,11 +32,7 @@ class Predator(Particle):
             self.x = chosenBestCoord[0]
             self.y = chosenBestCoord[1]
     
-    def eat(self, particles):
-        newParticles = []
-        for p in particles:
-            if p.getLocation() != self.getLocation():
-                newParticles.append(p)
-            else:
-                self.particlesEaten += 1
-        return newParticles
+    def eat(self, world):
+        newParticles = [p for p in world.particles if p.getLocation() != self.getLocation()]
+        self.particlesEaten += abs(len(world.particles) - len(newParticles))
+        world.particles = newParticles

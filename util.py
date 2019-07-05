@@ -1,3 +1,5 @@
+import random
+
 def getManhattanDistance(coord1, coord2):
     return abs(coord1[0] - coord2[0]) + abs(coord1[1] - coord2[1])
 
@@ -16,3 +18,8 @@ def findClosestCoordsToTargetCoord(targetCoord: tuple, coords: tuple):
         closestCoords.append(coords[idx])
     
     return closestCoords
+
+def findRandomPosition(width, height):
+    x = random.randint(0, width)
+    y = random.randint(0, height)
+    return (x, y)
