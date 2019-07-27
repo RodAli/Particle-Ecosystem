@@ -6,14 +6,14 @@ from worldState import WorldState
 pygame.init()
 
 # TODO:
-# -> Change snake_case to camelCase
-# -> Particles cannot intersect with eachother or predators (they dont kill themselves)
+# -> Make creeps have a an energy count
 
-BOARD_WIDTH = 150
-BOARD_HEIGHT = 80
+BOARD_WIDTH = 50
+BOARD_HEIGHT = 50
 PARTICLE_DIAMETER = 10
-NUMBER_OF_PARTICLES = 10
-NUMBER_OF_PREDATORS = 3
+NUMBER_OF_PARTICLES = 0
+NUMBER_OF_PREDATORS = 1
+NUMBER_OF_CREEPS = 100
 
 BOARD_WIDTH_PIXELS = BOARD_WIDTH * PARTICLE_DIAMETER
 BOARD_HEIGHT_PIXELS = BOARD_HEIGHT * PARTICLE_DIAMETER
@@ -31,21 +31,21 @@ def gridLocationToPixelLocation(location):
 
 def handleClick(clickPosition, world):
     gridLocation = (clickPosition[0] // PARTICLE_DIAMETER, clickPosition[1] // PARTICLE_DIAMETER)
-    world.createParticle(gridLocation)
+    world.createCreep(gridLocation)
+    #world.createPredator(gridLocation)
 
 def handleEvents(events, world):
     for event in events:
         if event.type == pygame.QUIT: world.isRunning = False
         
-        if event.type == pygame.MOUSEBUTTONUP: 
+        if event.type == pygame.MOUSEBUTTONUP:
             handleClick(pygame.mouse.get_pos(), world)
+            
 
 def drawBoard(screen, world):
     screen.fill(getColour("BLACK"))
-    for p in world.particles:
-        pygame.draw.circle(screen, p.getColour(), gridLocationToPixelLocation(p.getLocation()), PARTICLE_DIAMETER // 2)    
-    for p in world.predators:
-        pygame.draw.circle(screen, p.getColour(), gridLocationToPixelLocation(p.getLocation()), PARTICLE_DIAMETER // 2)
+    for e in world.getEntities():
+        pygame.draw.circle(screen, e.getColour(), gridLocationToPixelLocation(e.getLocation()), PARTICLE_DIAMETER // 2)    
 
 def gameLoop(screen, clock, world):
     
@@ -55,12 +55,7 @@ def gameLoop(screen, clock, world):
         
         drawBoard(screen, world)
         
-        for p in world.predators:
-            p.eat(world)
-            p.move(world)
-            p.eat(world)
-        for p in world.particles:
-            p.move(world)
+        world.moveEntities()
         
         pygame.display.update()
         clock.tick(15)
@@ -71,6 +66,7 @@ def main():
     # make thse function apart of the world class
     world.createParticles(NUMBER_OF_PARTICLES)
     world.createPredators(NUMBER_OF_PREDATORS)
+    world.createCreeps(NUMBER_OF_CREEPS)
 
     gameLoop(screen, clock, world)
 

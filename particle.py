@@ -22,37 +22,33 @@ class Particle:
         self.x = coord[0]
         self.y = coord[1]
 
-    def getColour(self):
+    def getColour(self):  
         return self.colour
     
-    def getViablePositionsToMove(self, boardWidth, boardHeight):
-        viablePositions = []
+    def getViablePositionsToMove(self, world):
+        viablePositions = [self.getLocation()]
 
         if self.x > 0:
             viablePositions.append((self.x - 1, self.y))
-        if self.x < boardWidth - 1:
+        if self.x < world.gridWidth - 1:
             viablePositions.append((self.x + 1, self.y))
         if self.y > 0:
             viablePositions.append((self.x, self.y - 1))
-        if self.y < boardHeight - 1:
+        if self.y < world.gridHeight - 1:
             viablePositions.append((self.x, self.y + 1))
+        
+        # Cannot move on top of another prey
+        positionsOfAllOtherPrey = [p.getLocation() for p in world.getPrey() if p.id != self.id]
+        viablePositions = [p for p in viablePositions if p not in positionsOfAllOtherPrey]
 
         return viablePositions
 
     def move(self, world):
-        viablePositions = self.getViablePositionsToMove(world.gridWidth, world.gridHeight)
+        viablePositions = self.getViablePositionsToMove(world)
 
         if len(viablePositions) > 0:
             selectedPosition = random.choice(viablePositions)
             self.setLocation(selectedPosition)
     
-    def filterSelfOutOfParticleList(self, particles):
-        return list(filter(lambda p: p.id != self.id, particles))
-
-    def findClosestParticle(self, particles):   # We dont need this function
-        otherParticles = self.filterSelfOutOfParticleList(particles)
-        particleCoords = [p.getLocation() for p in otherParticles]
-        closestCoords = util.findClosestCoordsToTargetCoord(self.getLocation(), particleCoords)
-
-        if len(closestCoords) > 0:
-            return random.choice(closestCoords)
+    def eat(self, world):
+        pass

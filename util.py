@@ -19,6 +19,23 @@ def findClosestCoordsToTargetCoord(targetCoord: tuple, coords: tuple):
     
     return closestCoords
 
+# We can make reusable logic from this and the above methods. Similar logic
+def findFurthestCoordsToTargetCoord(targetCoord: tuple, coords: tuple):
+    manhattanDistances = [getManhattanDistance(targetCoord, c) for c in coords]
+
+    closestDistance = max(manhattanDistances)
+
+    indexes = []
+    for i in range(len(manhattanDistances)):
+        if closestDistance == manhattanDistances[i]:
+            indexes.append(i)
+
+    closestCoords = []
+    for idx in indexes:
+        closestCoords.append(coords[idx])
+    
+    return closestCoords
+
 def findRandomPosition(width, height):
     x = random.randint(0, width)
     y = random.randint(0, height)
