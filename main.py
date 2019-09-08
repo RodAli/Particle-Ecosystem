@@ -1,19 +1,20 @@
 import sys, pygame, random
 from colours import getColour
 from particle import Particle
-from predator import Predator
+from predatorParticle import PredatorParticle
 from worldState import WorldState
 pygame.init()
 
 # TODO:
 # -> Make creeps have a an energy count
+# -> Add prevention of unit collision
 
 BOARD_WIDTH = 50
 BOARD_HEIGHT = 50
 PARTICLE_DIAMETER = 10
-NUMBER_OF_PARTICLES = 0
+NUMBER_OF_RANDOM_PARTICLES = 10
 NUMBER_OF_PREDATORS = 1
-NUMBER_OF_CREEPS = 100
+NUMBER_OF_PREY = 0
 
 BOARD_WIDTH_PIXELS = BOARD_WIDTH * PARTICLE_DIAMETER
 BOARD_HEIGHT_PIXELS = BOARD_HEIGHT * PARTICLE_DIAMETER
@@ -31,7 +32,7 @@ def gridLocationToPixelLocation(location):
 
 def handleClick(clickPosition, world):
     gridLocation = (clickPosition[0] // PARTICLE_DIAMETER, clickPosition[1] // PARTICLE_DIAMETER)
-    world.createCreep(gridLocation)
+    world.createPrey(gridLocation)
     #world.createPredator(gridLocation)
 
 def handleEvents(events, world):
@@ -45,7 +46,7 @@ def handleEvents(events, world):
 def drawBoard(screen, world):
     screen.fill(getColour("BLACK"))
     for e in world.getEntities():
-        pygame.draw.circle(screen, e.getColour(), gridLocationToPixelLocation(e.getLocation()), PARTICLE_DIAMETER // 2)    
+        pygame.draw.circle(screen, e.colour, gridLocationToPixelLocation(e.getLocation()), PARTICLE_DIAMETER // 2)    
 
 def gameLoop(screen, clock, world):
     
@@ -64,9 +65,9 @@ def main():
     screen, clock = setupScreen()
     world = WorldState(BOARD_WIDTH, BOARD_HEIGHT)
     # make thse function apart of the world class
-    world.createParticles(NUMBER_OF_PARTICLES)
+    world.createRandomParticles(NUMBER_OF_RANDOM_PARTICLES)
     world.createPredators(NUMBER_OF_PREDATORS)
-    world.createCreeps(NUMBER_OF_CREEPS)
+    world.createPreys(NUMBER_OF_PREY)
 
     gameLoop(screen, clock, world)
 

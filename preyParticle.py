@@ -2,7 +2,7 @@ from particle import Particle
 import util
 import random
 
-class Creep(Particle):
+class Prey(Particle):
 
     def __init__(self, id, x, y, colour):
         Particle.__init__(self, id, x, y, colour)
@@ -28,12 +28,12 @@ class Creep(Particle):
     def move(self, world):
 
         # If there are no predators, default to random movement
-        if len(world.predators) <= 0:
+        if len(world.predatorParticles) <= 0:
             Particle.move(self, world)
             return
         
         # Get location of all predators
-        predatorLocations = [p.getLocation() for p in world.predators]
+        predatorLocations = [p.getLocation() for p in world.predatorParticles]
 
         # Get the location of the predators that are the closest
         closestPredatorLocations = util.findClosestCoordsToTargetCoord(self.getLocation(), predatorLocations)

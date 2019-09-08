@@ -1,7 +1,7 @@
 import util
-from particle import Particle
-from predator import Predator
-from creep import Creep
+from randomParticle import RandomParticle
+from predatorParticle import PredatorParticle
+from preyParticle import Prey
 from colours import getColour
 
 class WorldState:
@@ -9,13 +9,13 @@ class WorldState:
     def __init__(self, gridWidth, gridHeight):
         self.gridWidth = gridWidth
         self.gridHeight = gridHeight
-        self.particles = []
-        self.predators = []
-        self.creeps = []
+        self.randomParticles = []
+        self.predatorParticles = []
+        self.preyParticles = []
         self.walls = []
-        self.particleCounter = 0
+        self.randomParticleCounter = 0
         self.predatorCounter = 0
-        self.creepCounter = 0
+        self.preyCounter = 0
         self.isRunning = True
     
     def moveEntities(self):
@@ -24,37 +24,37 @@ class WorldState:
             e.eat(self)
     
     def getEntities(self):
-        return self.particles + self.predators + self.creeps
+        return self.randomParticles + self.predatorParticles + self.preyParticles
     
     def getPrey(self):
-        return self.particles + self.creeps
+        return self.randomParticles + self.preyParticles
 
-    def createParticles(self, numberOfParticles):
-        for i in range(numberOfParticles):
+    def createRandomParticles(self, numberOfParticles):
+        for _ in range(numberOfParticles):
             randomPosition = util.findRandomPosition(self.gridWidth, self.gridHeight)
-            self.createParticle(randomPosition)
+            self.createRandomParticle(randomPosition)
             
-    def createParticle(self, location):
-        particleName = 'Particle-' + str(self.particleCounter)
-        self.particles.append(
-                Particle(
+    def createRandomParticle(self, location):
+        particleName = 'RandomParticle-' + str(self.randomParticleCounter)
+        self.randomParticles.append(
+                RandomParticle(
                     id=particleName, 
                     x=location[0], 
                     y=location[1],
                     colour=getColour("GREEN")
                 )
             )
-        self.particleCounter += 1
+        self.randomParticleCounter += 1
 
     def createPredators(self, numberOfPredators):
-        for i in range(numberOfPredators):
+        for _ in range(numberOfPredators):
             randomPosition = util.findRandomPosition(self.gridWidth, self.gridHeight)
             self.createPredator(randomPosition)
     
     def createPredator(self, location):
         predatorName = 'Predator-' + str(self.predatorCounter)
-        self.predators.append(
-            Predator(
+        self.predatorParticles.append(
+            PredatorParticle(
                 id=predatorName, 
                 x=location[0], 
                 y=location[1],
@@ -63,19 +63,20 @@ class WorldState:
         )
         self.predatorCounter += 1
 
-    def createCreeps(self, numberOfCreeps):
-        for i in range(numberOfCreeps):
+    def createPreys(self, numberOfPrey):
+        for _ in range(numberOfPrey):
             randomPosition = util.findRandomPosition(self.gridWidth, self.gridHeight)
-            self.createCreep(randomPosition)
+            print(randomPosition)
+            self.createPrey(randomPosition)
     
-    def createCreep(self, location):
-        creepName = 'Creep-' + str(self.creepCounter)
-        self.creeps.append(
-            Creep(
-                id=creepName, 
+    def createPrey(self, location):
+        preyName = 'Prey-' + str(self.preyCounter)
+        self.preyParticles.append(
+            Prey(
+                id=preyName, 
                 x=location[0], 
                 y=location[1],
                 colour=getColour("BLUE")
             )
         )
-        self.creepCounter += 1
+        self.preyCounter += 1
