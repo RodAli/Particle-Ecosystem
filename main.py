@@ -1,7 +1,5 @@
-import sys, pygame, random
-from colours import getColour
-from particle import Particle
-from predatorParticle import PredatorParticle
+import pygame
+from colours import Colours
 from worldState import WorldState
 pygame.init()
 
@@ -11,65 +9,72 @@ pygame.init()
 
 BOARD_WIDTH = 50
 BOARD_HEIGHT = 50
-PARTICLE_DIAMETER = 10
-NUMBER_OF_RANDOM_PARTICLES = 10
-NUMBER_OF_PREDATORS = 1
-NUMBER_OF_PREY = 0
+AGENT_DIAMETER = 10
+NUMBER_OF_RANDOM_AGENTS = 10
+NUMBER_OF_CHASE_AGENTS = 1
+NUMBER_OF_FLEE_AGENTS = 0
 
-BOARD_WIDTH_PIXELS = BOARD_WIDTH * PARTICLE_DIAMETER
-BOARD_HEIGHT_PIXELS = BOARD_HEIGHT * PARTICLE_DIAMETER
+BOARD_WIDTH_PIXELS = BOARD_WIDTH * AGENT_DIAMETER
+BOARD_HEIGHT_PIXELS = BOARD_HEIGHT * AGENT_DIAMETER
 
-def setupScreen():
+
+def setup_screen():
     screen = pygame.display.set_mode((BOARD_WIDTH_PIXELS, BOARD_HEIGHT_PIXELS))
     pygame.display.set_caption("Particle Ecosystem")
     clock = pygame.time.Clock()
     return screen, clock
 
-def gridLocationToPixelLocation(location):
-    pixelLocationX = (location[0] * PARTICLE_DIAMETER) + (PARTICLE_DIAMETER // 2) 
-    pixelLocationY = (location[1] * PARTICLE_DIAMETER) + (PARTICLE_DIAMETER // 2)
-    return (pixelLocationX, pixelLocationY)
 
-def handleClick(clickPosition, world):
-    gridLocation = (clickPosition[0] // PARTICLE_DIAMETER, clickPosition[1] // PARTICLE_DIAMETER)
-    world.createPrey(gridLocation)
-    #world.createPredator(gridLocation)
+def grid_location_to_pixel_location(location):
+    pixel_location_x = (location[0] * AGENT_DIAMETER) + (AGENT_DIAMETER // 2)
+    pixel_location_y = (location[1] * AGENT_DIAMETER) + (AGENT_DIAMETER // 2)
+    return pixel_location_x, pixel_location_y
 
-def handleEvents(events, world):
+
+def handle_click(click_position, world):
+    grid_location = (click_position[0] // AGENT_DIAMETER, click_position[1] // AGENT_DIAMETER)
+    world.create_flee_agent(grid_location)
+    # world.createPredator(gridLocation)
+
+
+def handle_events(events, world):
     for event in events:
         if event.type == pygame.QUIT: world.isRunning = False
         
         if event.type == pygame.MOUSEBUTTONUP:
-            handleClick(pygame.mouse.get_pos(), world)
+            handle_click(pygame.mouse.get_pos(), world)
             
 
-def drawBoard(screen, world):
-    screen.fill(getColour("BLACK"))
-    for e in world.getEntities():
-        pygame.draw.circle(screen, e.colour, gridLocationToPixelLocation(e.getLocation()), PARTICLE_DIAMETER // 2)    
+def draw_board(screen, world):
+    screen.fill(Colours.BLACK.value)
+    for e in world.get_entities():
+        pygame.draw.circle(screen, e.colour, grid_location_to_pixel_location(e.get_location()), AGENT_DIAMETER // 2)
 
-def gameLoop(screen, clock, world):
+
+def game_loop(screen, clock, world):
     
     while world.isRunning:
         
-        handleEvents(pygame.event.get(), world) 
+        handle_events(pygame.event.get(), world)
         
-        drawBoard(screen, world)
+        draw_board(screen, world)
         
-        world.moveEntities()
+        world.move_entities()
         
         pygame.display.update()
         clock.tick(15)
 
-def main():
-    screen, clock = setupScreen()
-    world = WorldState(BOARD_WIDTH, BOARD_HEIGHT)
-    # make thse function apart of the world class
-    world.createRandomParticles(NUMBER_OF_RANDOM_PARTICLES)
-    world.createPredators(NUMBER_OF_PREDATORS)
-    world.createPreys(NUMBER_OF_PREY)
 
-    gameLoop(screen, clock, world)
+def main():
+    screen, clock = setup_screen()
+    world = WorldState(BOARD_WIDTH, BOARD_HEIGHT)
+    # make these functions apart of the world class
+    world.create_random_agents(NUMBER_OF_RANDOM_AGENTS)
+    world.create_chase_agents(NUMBER_OF_CHASE_AGENTS)
+    world.create_flee_agents(NUMBER_OF_FLEE_AGENTS)
+
+    game_loop(screen, clock, world)
+
 
 if __name__ == "__main__":
     main()

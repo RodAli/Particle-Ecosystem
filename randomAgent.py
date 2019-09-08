@@ -1,7 +1,8 @@
-from particle import Particle
+from agent import Agent
 import random
 
-class RandomParticle(Particle):
+
+class RandomAgent(Agent):
 
     def __init__(self, id, x, y, colour):
         super().__init__(id, x, y, colour)
@@ -11,11 +12,11 @@ class RandomParticle(Particle):
     # viablePositions = [p for p in viablePositions if p not in positionsOfAllOtherPrey]
 
     def move(self, world):
-        viablePositions = super().getViablePositionsToMoveOnBoard(world)
+        viable_positions = super().get_positions_to_move_on_board(world)
 
-        if len(viablePositions) > 0:
-            selectedPosition = random.choice(viablePositions)
-            self.setLocation(selectedPosition)
+        if len(viable_positions) > 0:
+            selected_position = random.choice(viable_positions)
+            self.set_location(selected_position)
     
     def eat(self, world):
         pass

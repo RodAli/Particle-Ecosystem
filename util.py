@@ -1,42 +1,46 @@
 import random
 
-def getManhattanDistance(coord1, coord2):
+
+def get_manhattan_distance(coord1, coord2):
     return abs(coord1[0] - coord2[0]) + abs(coord1[1] - coord2[1])
 
-def findClosestCoordsToTargetCoord(targetCoord: tuple, coords: tuple):
-    manhattanDistances = [getManhattanDistance(targetCoord, c) for c in coords]
 
-    closestDistance = min(manhattanDistances)
+def find_closest_coords_to_target_coord(target_coord: tuple, coords: list):
+    manhattan_distances = [get_manhattan_distance(target_coord, c) for c in coords]
 
-    indexes = []
-    for i in range(len(manhattanDistances)):
-        if closestDistance == manhattanDistances[i]:
-            indexes.append(i)
-
-    closestCoords = []
-    for idx in indexes:
-        closestCoords.append(coords[idx])
-    
-    return closestCoords
-
-# We can make reusable logic from this and the above methods. Similar logic
-def findFurthestCoordsToTargetCoord(targetCoord: tuple, coords: tuple):
-    manhattanDistances = [getManhattanDistance(targetCoord, c) for c in coords]
-
-    closestDistance = max(manhattanDistances)
+    closest_distance = min(manhattan_distances)
 
     indexes = []
-    for i in range(len(manhattanDistances)):
-        if closestDistance == manhattanDistances[i]:
+    for i in range(len(manhattan_distances)):
+        if closest_distance == manhattan_distances[i]:
             indexes.append(i)
 
-    closestCoords = []
+    closest_coords = []
     for idx in indexes:
-        closestCoords.append(coords[idx])
+        closest_coords.append(coords[idx])
     
-    return closestCoords
+    return closest_coords
 
-def findRandomPosition(width, height):
+
+# Todo We can make reusable logic from this and the above methods. Similar logic
+def find_furthest_coords_to_target_coord(targetCoord: tuple, coords: list):
+    manhattan_distances = [get_manhattan_distance(targetCoord, c) for c in coords]
+
+    closest_distance = max(manhattan_distances)
+
+    indexes = []
+    for i in range(len(manhattan_distances)):
+        if closest_distance == manhattan_distances[i]:
+            indexes.append(i)
+
+    closest_coords = []
+    for idx in indexes:
+        closest_coords.append(coords[idx])
+    
+    return closest_coords
+
+
+def find_random_position(width, height):
     x = random.randint(0, width)
     y = random.randint(0, height)
-    return (x, y)
+    return x, y

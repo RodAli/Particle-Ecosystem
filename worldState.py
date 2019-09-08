@@ -1,82 +1,82 @@
 import util
-from randomParticle import RandomParticle
-from predatorParticle import PredatorParticle
-from preyParticle import Prey
-from colours import getColour
+from randomAgent import RandomAgent
+from chaseAgent import ChaseAgent
+from fleeAgent import FleeAgent
+from colours import Colours
+
 
 class WorldState:
 
-    def __init__(self, gridWidth, gridHeight):
-        self.gridWidth = gridWidth
-        self.gridHeight = gridHeight
-        self.randomParticles = []
-        self.predatorParticles = []
-        self.preyParticles = []
-        self.walls = []
-        self.randomParticleCounter = 0
-        self.predatorCounter = 0
-        self.preyCounter = 0
+    def __init__(self, grid_width, grid_height):
+        self.grid_width = grid_width
+        self.grid_height = grid_height
+        self.random_agents = []
+        self.chase_agents = []
+        self.flee_agents = []
+        self.random_agent_counter = 0
+        self.chase_agent_counter = 0
+        self.flee_agent_counter = 0
         self.isRunning = True
     
-    def moveEntities(self):
-        for e in self.getEntities():
+    def move_entities(self):
+        for e in self.get_entities():
             e.move(self)
             e.eat(self)
     
-    def getEntities(self):
-        return self.randomParticles + self.predatorParticles + self.preyParticles
+    def get_entities(self):
+        return self.random_agents + self.chase_agents + self.flee_agents
     
-    def getPrey(self):
-        return self.randomParticles + self.preyParticles
+    def get_prey(self):
+        return self.random_agents + self.flee_agents
 
-    def createRandomParticles(self, numberOfParticles):
-        for _ in range(numberOfParticles):
-            randomPosition = util.findRandomPosition(self.gridWidth, self.gridHeight)
-            self.createRandomParticle(randomPosition)
+    def create_random_agents(self, number_of_agents):
+        for _ in range(number_of_agents):
+            random_position = util.find_random_position(self.grid_width, self.grid_height)
+            self.create_random_agent(random_position)
             
-    def createRandomParticle(self, location):
-        particleName = 'RandomParticle-' + str(self.randomParticleCounter)
-        self.randomParticles.append(
-                RandomParticle(
-                    id=particleName, 
+    def create_random_agent(self, location):
+        agent_name = 'Random-Agent-' + str(self.random_agent_counter)
+        self.random_agents.append(
+                RandomAgent(
+                    id=agent_name,
                     x=location[0], 
                     y=location[1],
-                    colour=getColour("GREEN")
+                    colour=Colours.GREEN.value
                 )
             )
-        self.randomParticleCounter += 1
+        self.random_agent_counter += 1
 
-    def createPredators(self, numberOfPredators):
-        for _ in range(numberOfPredators):
-            randomPosition = util.findRandomPosition(self.gridWidth, self.gridHeight)
-            self.createPredator(randomPosition)
+    def create_chase_agents(self, number_of_chase_agents):
+        for _ in range(number_of_chase_agents):
+            random_position = util.find_random_position(self.grid_width, self.grid_height)
+            self.create_chase_agent(random_position)
     
-    def createPredator(self, location):
-        predatorName = 'Predator-' + str(self.predatorCounter)
-        self.predatorParticles.append(
-            PredatorParticle(
-                id=predatorName, 
+    def create_chase_agent(self, location):
+        chase_agent_name = 'Chase-Agent-' + str(self.chase_agent_counter)
+        self.chase_agents.append(
+            ChaseAgent(
+                id=chase_agent_name,
                 x=location[0], 
                 y=location[1],
-                colour=getColour("RED")
+                colour=Colours.RED.value
             )
         )
-        self.predatorCounter += 1
+        self.chase_agent_counter += 1
 
-    def createPreys(self, numberOfPrey):
-        for _ in range(numberOfPrey):
-            randomPosition = util.findRandomPosition(self.gridWidth, self.gridHeight)
-            print(randomPosition)
-            self.createPrey(randomPosition)
+    def create_flee_agents(self, number_of_flee_agents):
+        for _ in range(number_of_flee_agents):
+            random_position = util.find_random_position(self.grid_width, self.grid_height)
+            print(random_position)
+            self.create_flee_agent(random_position)
     
-    def createPrey(self, location):
-        preyName = 'Prey-' + str(self.preyCounter)
-        self.preyParticles.append(
-            Prey(
-                id=preyName, 
+    def create_flee_agent(self, location):
+        flee_agent_name = 'Flee-Agent-' + str(self.flee_agent_counter)
+        self.flee_agents.append(
+            FleeAgent(
+                id=flee_agent_name,
                 x=location[0], 
                 y=location[1],
-                colour=getColour("BLUE")
+                colour=Colours.BLUE.value
             )
         )
-        self.preyCounter += 1
+        self.flee_agent_counter += 1
