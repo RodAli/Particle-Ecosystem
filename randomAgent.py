@@ -4,8 +4,8 @@ import random
 
 class RandomAgent(Agent):
 
-    def __init__(self, id, x, y, colour):
-        super().__init__(id, x, y, colour)
+    def __init__(self, id: int, x: int, y: int, colour: tuple, type: str):
+        super().__init__(id, x, y, colour, type)
     
     # Cannot move on top of another prey
     # positionsOfAllOtherPrey = [p.getLocation() for p in world.getPrey() if p.id != self.id]

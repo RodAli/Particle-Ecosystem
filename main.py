@@ -33,8 +33,8 @@ def grid_location_to_pixel_location(location):
 
 def handle_click(click_position, world):
     grid_location = (click_position[0] // AGENT_DIAMETER, click_position[1] // AGENT_DIAMETER)
-    world.create_flee_agent(grid_location)
-    # world.createPredator(gridLocation)
+    #world.create_flee_agent(grid_location)
+    world.create_chase_agent(grid_location, 'chaseType', ['randomAgent'])
 
 
 def handle_events(events, world):
@@ -47,7 +47,7 @@ def handle_events(events, world):
 
 def draw_board(screen, world):
     screen.fill(Colours.BLACK.value)
-    for e in world.get_entities():
+    for e in world.get_all_agents():
         pygame.draw.circle(screen, e.colour, grid_location_to_pixel_location(e.get_location()), AGENT_DIAMETER // 2)
 
 
@@ -59,7 +59,7 @@ def game_loop(screen, clock, world):
         
         draw_board(screen, world)
         
-        world.move_entities()
+        world.move_all_agents()
         
         pygame.display.update()
         clock.tick(15)
@@ -69,9 +69,9 @@ def main():
     screen, clock = setup_screen()
     world = WorldState(BOARD_WIDTH, BOARD_HEIGHT)
     # make these functions apart of the world class
-    world.create_random_agents(NUMBER_OF_RANDOM_AGENTS)
-    world.create_chase_agents(NUMBER_OF_CHASE_AGENTS)
-    world.create_flee_agents(NUMBER_OF_FLEE_AGENTS)
+    world.create_random_agents(NUMBER_OF_RANDOM_AGENTS, 'randomAgent')
+    world.create_chase_agents(NUMBER_OF_CHASE_AGENTS, 'chaseAgent', ['randomAgent'])
+    #world.create_flee_agents(NUMBER_OF_FLEE_AGENTS)
 
     game_loop(screen, clock, world)
 

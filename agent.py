@@ -1,10 +1,11 @@
 class Agent:
 
-    def __init__(self, id, x, y, colour):
+    def __init__(self, id: str, x: int, y: int, colour: tuple, type: str):
         self.id = id
         self.x = x
         self.y = y
         self.colour = colour
+        self.type = type
 
     def get_location(self):
         return self.x, self.y

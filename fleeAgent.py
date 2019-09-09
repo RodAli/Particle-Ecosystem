@@ -5,8 +5,8 @@ import random
 
 class FleeAgent(Agent):
 
-    def __init__(self, id, x, y, colour):
-        Agent.__init__(self, id, x, y, colour)
+    def __init__(self, id, x, y, colour, type):
+        Agent.__init__(self, id, x, y, colour, type)
 
     def get_viable_positions_to_move(self, world):
         viable_positions = [self.get_location()]

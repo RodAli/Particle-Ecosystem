@@ -1,7 +1,6 @@
 import util
 from randomAgent import RandomAgent
 from chaseAgent import ChaseAgent
-from fleeAgent import FleeAgent
 from colours import Colours
 
 
@@ -10,73 +9,76 @@ class WorldState:
     def __init__(self, grid_width, grid_height):
         self.grid_width = grid_width
         self.grid_height = grid_height
-        self.random_agents = []
-        self.chase_agents = []
-        self.flee_agents = []
-        self.random_agent_counter = 0
-        self.chase_agent_counter = 0
-        self.flee_agent_counter = 0
+        self.agents = []
+        self.agent_counter = 0
         self.isRunning = True
-    
-    def move_entities(self):
-        for e in self.get_entities():
+
+    def get_all_agents(self):
+        return self.agents
+
+    def get_agents_by_types(self, types: list):
+        return [a for a in self.agents if types.__contains__(a.type)]
+
+    def move_all_agents(self):
+        for e in self.agents:
             e.move(self)
             e.eat(self)
-    
-    def get_entities(self):
-        return self.random_agents + self.chase_agents + self.flee_agents
-    
-    def get_prey(self):
-        return self.random_agents + self.flee_agents
 
-    def create_random_agents(self, number_of_agents):
+    def remove_agents(self, ids: list):
+        self.agents = [a for a in self.agents if not ids.__contains__(a.id)]
+
+    def create_random_agents(self, number_of_agents: int, type: str):
         for _ in range(number_of_agents):
             random_position = util.find_random_position(self.grid_width, self.grid_height)
-            self.create_random_agent(random_position)
-            
-    def create_random_agent(self, location):
-        agent_name = 'Random-Agent-' + str(self.random_agent_counter)
-        self.random_agents.append(
+            self.create_random_agent(random_position, type)
+
+    def create_random_agent(self, location: tuple, type: str):
+        agent_name = 'Random-Agent-' + str(self.agent_counter)
+        self.agents.append(
                 RandomAgent(
                     id=agent_name,
-                    x=location[0], 
+                    x=location[0],
                     y=location[1],
-                    colour=Colours.GREEN.value
+                    colour=Colours.GREEN.value,
+                    type=type
                 )
             )
-        self.random_agent_counter += 1
+        self.agent_counter += 1
 
-    def create_chase_agents(self, number_of_chase_agents):
+    def create_chase_agents(self, number_of_chase_agents: int, type: str, chase_types: list):
         for _ in range(number_of_chase_agents):
             random_position = util.find_random_position(self.grid_width, self.grid_height)
-            self.create_chase_agent(random_position)
-    
-    def create_chase_agent(self, location):
-        chase_agent_name = 'Chase-Agent-' + str(self.chase_agent_counter)
-        self.chase_agents.append(
+            self.create_chase_agent(random_position, type, chase_types)
+
+    def create_chase_agent(self, location: tuple, type: str, chase_types: list):
+        chase_agent_name = 'Chase-Agent-' + str(self.agent_counter)
+        self.agents.append(
             ChaseAgent(
                 id=chase_agent_name,
-                x=location[0], 
+                x=location[0],
                 y=location[1],
-                colour=Colours.RED.value
+                colour=Colours.RED.value,
+                type=type,
+                chase_types=chase_types
             )
         )
-        self.chase_agent_counter += 1
+        self.agent_counter += 1
 
-    def create_flee_agents(self, number_of_flee_agents):
-        for _ in range(number_of_flee_agents):
-            random_position = util.find_random_position(self.grid_width, self.grid_height)
-            print(random_position)
-            self.create_flee_agent(random_position)
-    
-    def create_flee_agent(self, location):
-        flee_agent_name = 'Flee-Agent-' + str(self.flee_agent_counter)
-        self.flee_agents.append(
-            FleeAgent(
-                id=flee_agent_name,
-                x=location[0], 
-                y=location[1],
-                colour=Colours.BLUE.value
-            )
-        )
-        self.flee_agent_counter += 1
+    # def create_flee_agents(self, number_of_flee_agents):
+    #     for _ in range(number_of_flee_agents):
+    #         random_position = util.find_random_position(self.grid_width, self.grid_height)
+    #         print(random_position)
+    #         self.create_flee_agent(random_position)
+    #
+    # def create_flee_agent(self, location):
+    #     flee_agent_name = 'Flee-Agent-' + str(self.agent_counter)
+    #     self.agents.append(
+    #         FleeAgent(
+    #             id=flee_agent_name,
+    #             x=location[0],
+    #             y=location[1],
+    #             colour=Colours.BLUE.value,
+    #             type="fleeType"
+    #         )
+    #     )
+    #     self.agent_counter += 1
