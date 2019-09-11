@@ -16,7 +16,7 @@ class ChaseAgent(RandomAgent):
 
     def get_my_prey(self, world):
         all_prey = world.get_agents_by_types(self.chase_types)
-        # Just in case I am in won prey list, remove myselfs
+        # Just in case I am in won prey list, remove myself
         return [p for p in all_prey if p.id != self.id]
 
     def move(self, world):
@@ -31,12 +31,12 @@ class ChaseAgent(RandomAgent):
         prey_locations = [p.get_location() for p in all_prey]
 
         # Get the location of the prey that are the closest
-        prey_locations = util.find_closest_coords_to_target_coord(self.get_location(), prey_locations)
+        prey_locations_closest = util.find_closest_coords_to_target_coord(self.get_location(), prey_locations)
         
-        if len(prey_locations) < 1: return
+        if len(prey_locations_closest) < 1: return
         
         # Choose a random prey from among the closest prey
-        target_prey_location = random.choice(prey_locations)
+        target_prey_location = random.choice(prey_locations_closest)
         
         # Get the positions that we can legally move to
         viable_coords = super().get_positions_to_move_on_board(world)

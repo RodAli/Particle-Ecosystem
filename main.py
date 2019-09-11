@@ -12,7 +12,7 @@ BOARD_HEIGHT = 50
 AGENT_DIAMETER = 10
 NUMBER_OF_RANDOM_AGENTS = 10
 NUMBER_OF_CHASE_AGENTS = 1
-NUMBER_OF_FLEE_AGENTS = 0
+NUMBER_OF_FLEE_AGENTS = 5
 
 BOARD_WIDTH_PIXELS = BOARD_WIDTH * AGENT_DIAMETER
 BOARD_HEIGHT_PIXELS = BOARD_HEIGHT * AGENT_DIAMETER
@@ -34,7 +34,7 @@ def grid_location_to_pixel_location(location):
 def handle_click(click_position, world):
     grid_location = (click_position[0] // AGENT_DIAMETER, click_position[1] // AGENT_DIAMETER)
     #world.create_flee_agent(grid_location)
-    world.create_chase_agent(grid_location, 'chaseType', ['randomAgent'])
+    world.create_random_agent(grid_location, 'newType')
 
 
 def handle_events(events, world):
@@ -70,8 +70,10 @@ def main():
     world = WorldState(BOARD_WIDTH, BOARD_HEIGHT)
     # make these functions apart of the world class
     world.create_random_agents(NUMBER_OF_RANDOM_AGENTS, 'randomAgent')
-    world.create_chase_agents(NUMBER_OF_CHASE_AGENTS, 'chaseAgent', ['randomAgent'])
-    #world.create_flee_agents(NUMBER_OF_FLEE_AGENTS)
+
+    world.create_chase_agents(NUMBER_OF_CHASE_AGENTS, 'chaseAgent', ['fleeType'])
+
+    world.create_flee_agents(NUMBER_OF_FLEE_AGENTS, 'fleeType', 'chaseAgent')
 
     game_loop(screen, clock, world)
 
