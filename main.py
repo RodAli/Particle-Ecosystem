@@ -34,16 +34,16 @@ def grid_location_to_pixel_location(location):
 def handle_click(click_position, world):
     grid_location = (click_position[0] // AGENT_DIAMETER, click_position[1] // AGENT_DIAMETER)
     #world.create_flee_agent(grid_location)
-    world.create_random_agent(grid_location, 'newType')
+    world.create_random_agent(grid_location, 'randomAgent')
 
 
 def handle_events(events, world):
     for event in events:
-        if event.type == pygame.QUIT: world.isRunning = False
-        
-        if event.type == pygame.MOUSEBUTTONUP:
+        if event.type == pygame.QUIT:
+            world.isRunning = False
+        elif event.type == pygame.MOUSEBUTTONUP:
             handle_click(pygame.mouse.get_pos(), world)
-            
+
 
 def draw_board(screen, world):
     screen.fill(Colours.BLACK.value)
@@ -71,9 +71,9 @@ def main():
     # make these functions apart of the world class
     world.create_random_agents(NUMBER_OF_RANDOM_AGENTS, 'randomAgent')
 
-    world.create_chase_agents(NUMBER_OF_CHASE_AGENTS, 'chaseAgent', ['fleeType'])
+    world.create_chase_agents(NUMBER_OF_CHASE_AGENTS, 'chaseAgent', ['randomAgent'])
 
-    world.create_flee_agents(NUMBER_OF_FLEE_AGENTS, 'fleeType', 'chaseAgent')
+    #world.create_flee_agents(NUMBER_OF_FLEE_AGENTS, 'fleeAgent', ['chaseAgent'])
 
     game_loop(screen, clock, world)
 

@@ -14,7 +14,9 @@ class FleeAgent(Agent):
         # Just in case I am in won prey list, remove myself
         return [p for p in all_prey if p.id != self.id]
 
-    def move(self, world):
+    def move(self, grid_width: int, grid_height: int, all_agents: list):
+
+        all_agents = world.get_all_agents()
         all_predators = self.get_my_predators(world)
 
         # If there are no predators, default to random movement

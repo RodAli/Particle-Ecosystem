@@ -1,5 +1,7 @@
 from randomAgent import RandomAgent
+from agent import Agent
 import util
+from typing import List, Tuple
 import random
 
 # Cannot move on top of another predator
@@ -9,47 +11,35 @@ import random
 
 class ChaseAgent(RandomAgent):
 
-    def __init__(self, id: str, x: int, y: int, colour: tuple, type: str, chase_types: list):
-        super().__init__(id, x, y, colour, type)
+    def __init__(self, id: str, x: int, y: int, colour: Tuple[int, int, int], agent_type: str, chase_types: List):
+        super().__init__(id, x, y, colour, agent_type)
         self.chase_types = chase_types
         self.eat_count = 0
 
-    def get_my_prey(self, world):
-        all_prey = world.get_agents_by_types(self.chase_types)
-        # Just in case I am in won prey list, remove myself
-        return [p for p in all_prey if p.id != self.id]
-
-    def move(self, world):
-        all_prey = self.get_my_prey(world)
+    def move(self, grid_width: int, grid_height: int, all_agents: List[Agent]):
+        # Get me all my prey
+        all_prey = [a for a in all_agents if self.chase_types.__contains__(a.type) and a.id != self.id]
 
         # If there are no prey, default to random movement
         if len(all_prey) <= 0:
-            super().move(world)
+            super().move(grid_width, grid_height, all_agents)
             return
-        
-        # Get location of all prey
-        prey_locations = [p.get_location() for p in all_prey]
 
         # Get the location of the prey that are the closest
-        prey_locations_closest = util.find_closest_coords_to_target_coord(self.get_location(), prey_locations)
-        
-        if len(prey_locations_closest) < 1: return
-        
-        # Choose a random prey from among the closest prey
-        target_prey_location = random.choice(prey_locations_closest)
+        target_prey_location = \
+            min(all_prey, key=lambda prey: util.get_manhattan_distance(prey.get_location(), self.get_location()))
         
         # Get the positions that we can legally move to
-        viable_coords = super().get_positions_to_move_on_board(world)
+        viable_coords = super().get_positions_to_move_on_board(grid_width, grid_height)
         
         # Take the move that brings us closest to our prey
-        best_coords = util.find_closest_coords_to_target_coord(target_prey_location, viable_coords)
-        
-        if len(best_coords) > 0:
-            chosen_best_coord = random.choice(best_coords)
-            self.set_location(chosen_best_coord)
+        best_coord = util.find_closest_coord_to_target_coord(target_prey_location.get_location(), viable_coords)
 
-    def eat(self, world):
-        all_prey = self.get_my_prey(world)
+        self.set_location(best_coord)
+
+    def eat(self, all_agents: List[Agent]) -> List[Agent]:
+        # Get me all my prey
+        all_prey = [a for a in all_agents if self.chase_types.__contains__(a.type) and a.id != self.id]
         agent_ids_to_remove = [a.id for a in all_prey if a.get_location() == self.get_location()]
         self.eat_count += len(agent_ids_to_remove)
-        world.remove_agents(agent_ids_to_remove)
+        return [a for a in all_agents if not agent_ids_to_remove.__contains__(a.id)]
