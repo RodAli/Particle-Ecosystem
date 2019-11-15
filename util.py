@@ -21,6 +21,6 @@ def find_furthest_coords_to_target_coord(target_coord: Coord, coords: List[Coord
 
 
 def find_random_position(width: int, height: int):
-    x = random.randint(0, width)
-    y = random.randint(0, height)
+    x = random.randint(0, width - 1)
+    y = random.randint(0, height - 1)
     return x, y

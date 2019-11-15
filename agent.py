@@ -35,4 +35,4 @@ class Agent:
         pass
     
     def eat(self, all_agents: List) -> List:
-        pass
+        return all_agents

@@ -4,11 +4,6 @@ import util
 from typing import List, Tuple
 
 
-# Cannot move on top of another predator
-# positionsOfAllOtherPredators = [p.getLocation() for p in world.predators if p.id != self.id]
-# viablePositions = [p for p in viablePositions if p not in positionsOfAllOtherPredators]
-
-
 class FleeAgent(RandomAgent):
 
     def __init__(self, id: str, x: int, y: int, colour: Tuple[int, int, int], agent_type: str, flee_types: List[str]):
@@ -38,7 +33,7 @@ class FleeAgent(RandomAgent):
 
         # Take the move that brings us closest to our prey
         best_coord = util.find_furthest_coords_to_target_coord(target_predator_location.get_location(), viable_coords)
-        print(self.id, best_coord)
+
         self.set_location(best_coord)
 
     def eat(self, all_agents: List[Agent]) -> List[Agent]:

@@ -2,11 +2,6 @@ from randomAgent import RandomAgent
 from agent import Agent
 import util
 from typing import List, Tuple
-import random
-
-# Cannot move on top of another predator
-# positionsOfAllOtherPredators = [p.getLocation() for p in world.predators if p.id != self.id]
-# viablePositions = [p for p in viablePositions if p not in positionsOfAllOtherPredators]
 
 
 class ChaseAgent(RandomAgent):
