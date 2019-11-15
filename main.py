@@ -10,8 +10,8 @@ pygame.init()
 BOARD_WIDTH = 50
 BOARD_HEIGHT = 50
 AGENT_DIAMETER = 10
-NUMBER_OF_RANDOM_AGENTS = 10
-NUMBER_OF_CHASE_AGENTS = 1
+NUMBER_OF_RANDOM_AGENTS = 0
+NUMBER_OF_CHASE_AGENTS = 30
 NUMBER_OF_FLEE_AGENTS = 5
 
 BOARD_WIDTH_PIXELS = BOARD_WIDTH * AGENT_DIAMETER
@@ -71,7 +71,7 @@ def main():
     # make these functions apart of the world class
     world.create_random_agents(NUMBER_OF_RANDOM_AGENTS, 'randomAgent')
 
-    world.create_chase_agents(NUMBER_OF_CHASE_AGENTS, 'chaseAgent', ['randomAgent'])
+    world.create_chase_agents(NUMBER_OF_CHASE_AGENTS, 'chaseAgent', ['randomAgent', 'fleeAgent'])
 
     world.create_flee_agents(NUMBER_OF_FLEE_AGENTS, 'fleeAgent', ['chaseAgent'])
 

@@ -31,6 +31,10 @@ class ChaseAgent(RandomAgent):
         
         # Get the positions that we can legally move to
         viable_coords = super().get_positions_to_move_on_board(grid_width, grid_height)
+
+        # Make sure that this chase agent cannot move on top of another same type agent
+        own_types = [a.get_location() for a in all_agents if a.type == self.type and a.id != self.id]
+        viable_coords = [c for c in viable_coords if c not in own_types]
         
         # Take the move that brings us closest to our prey
         best_coord = util.find_closest_coord_to_target_coord(target_prey_location.get_location(), viable_coords)
