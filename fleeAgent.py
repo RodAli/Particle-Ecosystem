@@ -38,7 +38,7 @@ class FleeAgent(RandomAgent):
 
         # Take the move that brings us closest to our prey
         best_coord = util.find_furthest_coords_to_target_coord(target_predator_location.get_location(), viable_coords)
-
+        print(self.id, best_coord)
         self.set_location(best_coord)
 
     def eat(self, all_agents: List[Agent]) -> List[Agent]:
