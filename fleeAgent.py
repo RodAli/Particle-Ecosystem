@@ -1,49 +1,41 @@
+from randomAgent import RandomAgent
 from agent import Agent
 import util
-import random
+from typing import List, Tuple
 
 
-class FleeAgent(Agent):
+# Cannot move on top of another predator
+# positionsOfAllOtherPredators = [p.getLocation() for p in world.predators if p.id != self.id]
+# viablePositions = [p for p in viablePositions if p not in positionsOfAllOtherPredators]
 
-    def __init__(self, id: str, x: int, y: int, colour: tuple, type: str, flee_types: list):
-        Agent.__init__(self, id, x, y, colour, type)
+
+class FleeAgent(RandomAgent):
+
+    def __init__(self, id: str, x: int, y: int, colour: Tuple[int, int, int], agent_type: str, flee_types: List[str]):
+        super().__init__(id, x, y, colour, agent_type)
         self.flee_types = flee_types
+        self.eat_count = 0
 
-    def get_my_predators(self, world):
-        all_prey = world.get_agents_by_types(self.flee_types)
-        # Just in case I am in won prey list, remove myself
-        return [p for p in all_prey if p.id != self.id]
-
-    def move(self, grid_width: int, grid_height: int, all_agents: list):
-
-        all_agents = world.get_all_agents()
-        all_predators = self.get_my_predators(world)
+    def move(self, grid_width: int, grid_height: int, all_agents: List[Agent]):
+        # Get me all my predators
+        all_predators = [a for a in all_agents if self.flee_types.__contains__(a.type) and a.id != self.id]
 
         # If there are no predators, default to random movement
         if len(all_predators) <= 0:
-            super().move(world)
+            super().move(grid_width, grid_height, all_agents)
             return
 
-        # Get location of all predators
-        predator_locations = [p.get_location() for p in all_predators]
-
-        # Get the location of the predators that are the closest
-        predator_locations_closest = util.find_closest_coords_to_target_coord(self.get_location(), predator_locations)
-
-        if len(predator_locations_closest) < 1: return
-
-        # Choose a random predators from among the closest predators
-        target_prey_location = random.choice(predator_locations_closest)
+        # Get the location of the predator that is the closest
+        target_predator_location = \
+            min(all_predators, key=lambda prey: util.get_manhattan_distance(prey.get_location(), self.get_location()))
 
         # Get the positions that we can legally move to
-        viable_coords = super().get_positions_to_move_on_board(world)
+        viable_coords = super().get_positions_to_move_on_board(grid_width, grid_height)
 
-        # Take the move that brings us furthest away from our predators
-        best_coords = util.find_furthest_coords_to_target_coord(target_prey_location, viable_coords)
+        # Take the move that brings us closest to our prey
+        best_coord = util.find_furthest_coords_to_target_coord(target_predator_location.get_location(), viable_coords)
+        
+        self.set_location(best_coord)
 
-        if len(best_coords) > 0:
-            chosen_best_coord = random.choice(best_coords)
-            self.set_location(chosen_best_coord)
-    
-    def eat(self, world):
-        pass
+    def eat(self, all_agents: List[Agent]) -> List[Agent]:
+        return all_agents

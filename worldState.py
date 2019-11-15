@@ -80,7 +80,7 @@ class WorldState:
                 x=location[0],
                 y=location[1],
                 colour=Colours.BLUE.value,
-                type=agent_type,
+                agent_type=agent_type,
                 flee_types=flee_types
             )
         )

@@ -73,7 +73,7 @@ def main():
 
     world.create_chase_agents(NUMBER_OF_CHASE_AGENTS, 'chaseAgent', ['randomAgent'])
 
-    #world.create_flee_agents(NUMBER_OF_FLEE_AGENTS, 'fleeAgent', ['chaseAgent'])
+    world.create_flee_agents(NUMBER_OF_FLEE_AGENTS, 'fleeAgent', ['chaseAgent'])
 
     game_loop(screen, clock, world)
 

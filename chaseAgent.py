@@ -11,7 +11,7 @@ import random
 
 class ChaseAgent(RandomAgent):
 
-    def __init__(self, id: str, x: int, y: int, colour: Tuple[int, int, int], agent_type: str, chase_types: List):
+    def __init__(self, id: str, x: int, y: int, colour: Tuple[int, int, int], agent_type: str, chase_types: List[str]):
         super().__init__(id, x, y, colour, agent_type)
         self.chase_types = chase_types
         self.eat_count = 0
@@ -25,7 +25,7 @@ class ChaseAgent(RandomAgent):
             super().move(grid_width, grid_height, all_agents)
             return
 
-        # Get the location of the prey that are the closest
+        # Get the location of the prey that is the closest
         target_prey_location = \
             min(all_prey, key=lambda prey: util.get_manhattan_distance(prey.get_location(), self.get_location()))
         
