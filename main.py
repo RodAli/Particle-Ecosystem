@@ -11,8 +11,8 @@ BOARD_WIDTH = 140
 BOARD_HEIGHT = 80
 AGENT_DIAMETER = 10
 NUMBER_OF_RANDOM_AGENTS = 0
-NUMBER_OF_CHASE_AGENTS = 25
-NUMBER_OF_FLEE_AGENTS = 300
+NUMBER_OF_CHASE_AGENTS = 2
+NUMBER_OF_FLEE_AGENTS = 100
 
 BOARD_WIDTH_PIXELS = BOARD_WIDTH * AGENT_DIAMETER
 BOARD_HEIGHT_PIXELS = BOARD_HEIGHT * AGENT_DIAMETER
@@ -71,7 +71,7 @@ def main():
     # make these functions apart of the world class
     world.create_random_agents(NUMBER_OF_RANDOM_AGENTS, 'randomAgent')
 
-    world.create_chase_agents(NUMBER_OF_CHASE_AGENTS, 'chaseAgent1', ['randomAgent', 'fleeAgent'])
+    world.create_chase_agents(NUMBER_OF_CHASE_AGENTS, 'chaseAgent', ['randomAgent', 'fleeAgent'])
 
     world.create_flee_agents(NUMBER_OF_FLEE_AGENTS, 'fleeAgent', ['chaseAgent'])
 

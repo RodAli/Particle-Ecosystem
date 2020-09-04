@@ -25,7 +25,7 @@ class ChaseAgent(RandomAgent):
             min(all_prey, key=lambda prey: util.get_manhattan_distance(prey.get_location(), self.get_location()))
         
         # Get the positions that we can legally move to
-        viable_coords = super().get_positions_to_move_on_board(grid_width, grid_height)
+        viable_coords = self.get_positions_to_move_on_board(grid_width, grid_height)
 
         # Make sure that this chase agent cannot move on top of another same type agent
         own_types = [a.get_location() for a in all_agents if a.type == self.type and a.id != self.id]
@@ -39,6 +39,15 @@ class ChaseAgent(RandomAgent):
     def eat(self, all_agents: List[Agent]) -> List[Agent]:
         # Get me all my prey
         all_prey = [a for a in all_agents if self.chase_types.__contains__(a.type) and a.id != self.id]
-        agent_ids_to_remove = [a.id for a in all_prey if a.get_location() == self.get_location()]
+        eat_locations = self.get_eat_reach_postions()
+        agent_ids_to_remove = [a.id for a in all_prey if a.get_location() in eat_locations]
         self.eat_count += len(agent_ids_to_remove)
         return [a for a in all_agents if not agent_ids_to_remove.__contains__(a.id)]
+
+    def get_eat_reach_postions(self):
+        reach_positions = []
+        for dx in range(-1, 2):
+            for dy in range(-1, 2):
+                reach_positions.append((self.x + dx, self.y + dy))
+
+        return reach_positions
