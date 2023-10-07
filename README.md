@@ -6,7 +6,7 @@ A simulation that models a predator-prey system through "particles". Some partic
 
 ### How to run
 
-You will need Python and Pygame (latest recommended), then simply run:
+You will need Python and [Pygame](https://www.pygame.org/) (latest recommended), then simply run:
 
 ```
 python main.py
