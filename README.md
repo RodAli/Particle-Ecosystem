@@ -15,8 +15,8 @@ python main.py
 Parameters for the simulation can be modified at the top of `main.py`. Parameters include board width height, the number of predators and prey:
 
 ```
-BOARD_WIDTH = 140
-BOARD_HEIGHT = 80
-NUMBER_OF_CHASE_AGENTS = 2
-NUMBER_OF_FLEE_AGENTS = 100
+BOARD_WIDTH
+BOARD_HEIGHT
+NUMBER_OF_CHASE_AGENTS
+NUMBER_OF_FLEE_AGENTS
 ```
